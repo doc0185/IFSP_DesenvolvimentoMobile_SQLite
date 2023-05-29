@@ -24,6 +24,16 @@ public class ArticleDaoSQLite implements IArticleDao{
 
     public static String createTable(){
         String sql = "CREATE TABLE " + Constant.ENTITY_ARTICLE + "(";
+        sql += Constant.ATTR_ID + " INTEGER PRIMARY KEY";
+        sql += Constant.ATTR_TITLE + " TEXT NOT NULL, ";
+        sql += Constant.ATTR_URL + " TEXT NOT NULL, ";
+        sql += Constant.ATTR_FAVORITE + " INTEGER NOT NULL ";
+        sql += "CHECK(" + Constant.ATTR_FAVORITE + " IN(0, 1))";
+        return sql;
+    }
+
+    public static String createTablev1(){
+        String sql = "CREATE TABLE " + Constant.ENTITY_ARTICLE + "(";
         sql += Constant.ATTR_TITLE + " TEXT NOT NULL, ";
         sql += Constant.ATTR_URL + " TEXT NOT NULL, ";
         sql += Constant.ATTR_FAVORITE + " INTEGER NOT NULL ";
@@ -47,7 +57,30 @@ public class ArticleDaoSQLite implements IArticleDao{
 
     @Override
     public boolean update(String oldTitle, Article article) {
-        return false;
+        boolean deuCerto = true;
+        ContentValues values = new ContentValues();
+        values.put(Constant.ATTR_TITLE, article.getTitle());
+        values.put(Constant.ATTR_URL, article.getUrl());
+        values.put(Constant.ATTR_FAVORITE, article.isFavorite()?1:0);
+
+        String where = Constant.ATTR_TITLE + " = ? ";
+        String whereArgs[] = {oldTitle};
+
+        try{
+            mDatabase = mHelper.getWritableDatabase();
+            mDatabase.update(
+                    Constant.ENTITY_ARTICLE,
+                    values,
+                    where,
+                    whereArgs
+            );
+        } catch (Exception e){
+            deuCerto = false;
+        } finally{
+            mDatabase.close();
+        }
+
+        return deuCerto;
     }
 
     @Override
@@ -57,7 +90,41 @@ public class ArticleDaoSQLite implements IArticleDao{
 
     @Override
     public Article findByTitle(String title) {
-        return null;
+        Article article = null;
+        String columns[] = new String[]{
+                Constant.ATTR_TITLE,
+                Constant.ATTR_URL,
+                Constant.ATTR_FAVORITE
+        };
+
+        String selection = Constant.ATTR_TITLE + " = ? ";
+        String selectionArgs[] = {title};
+
+        try{
+            mDatabase = mHelper.getReadableDatabase();
+            Cursor cursor = mDatabase.query(
+                    Constant.ENTITY_ARTICLE,
+                    columns,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+
+            if(cursor.moveToNext()){
+                article = new Article(
+                        cursor.getString(1),
+                        cursor.getString(0),
+                        cursor.getInt(2)==1?true:false
+                );
+            }
+            cursor.close();
+        }catch (Exception e){
+            article = null;
+        }
+
+        return article;
     }
 
     @Override

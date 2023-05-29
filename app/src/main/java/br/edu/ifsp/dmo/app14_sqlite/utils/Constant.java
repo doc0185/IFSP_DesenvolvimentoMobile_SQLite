@@ -5,5 +5,6 @@ public class Constant {
     public static final String ATTR_TITLE = "title";
     public static final String ATTR_URL = "url";
     public static final String ATTR_FAVORITE = "favorite";
+    public static final String ATTR_ID = "_id";
 
 }
