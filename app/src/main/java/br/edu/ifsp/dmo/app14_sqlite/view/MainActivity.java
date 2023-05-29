@@ -1,10 +1,13 @@
 package br.edu.ifsp.dmo.app14_sqlite.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,6 +47,26 @@ public class MainActivity extends AppCompatActivity implements MainMVP.View {
     @Override
     public Context getContext() {
         return this;
+    }
+
+    // infla o action menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            //case R.id.new_tag:
+                //criar nova tag
+                //break;
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void findViews(){

@@ -51,6 +51,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 db.execSQL(sql);
 
                 break;
+                //se houvessem mais versões, seria interessante retirar o break, para que
+                //depois que atualizasse da 1 pra 2, poderia seguir da 2 para 3, por exemplo.
         }
     }
 }
